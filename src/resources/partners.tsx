@@ -14,7 +14,7 @@ import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 export const partnersIcon = HandshakeRoundedIcon;
 
 const filters = [
-  <SearchInput source="name@ilike" alwaysOn placeholder="Search partner" key="q" />,
+  <SearchInput source="name" alwaysOn placeholder="Search partner" key="q" />,
 ];
 
 const Channels = (r: any) => {

@@ -18,7 +18,7 @@ import { Datagrid } from 'react-admin';
 export const feedbackIcon = FeedbackRoundedIcon;
 
 const filters = [
-  <SearchInput source="message@ilike" alwaysOn placeholder="Search message" key="q" />,
+  <SearchInput source="message" alwaysOn placeholder="Search message" key="q" />,
   <SelectInput
     source="category"
     key="cat"

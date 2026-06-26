@@ -11,9 +11,43 @@
       rel="stylesheet"
     />
     <title>DriveGuardian Admin</title>
+    <style>
+      @keyframes dgBootSpin { to { transform: rotate(360deg); } }
+      @keyframes dgBootPop {
+        0% { transform: scale(0.9); opacity: 0.6; }
+        50% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0.9); opacity: 0.6; }
+      }
+      #boot {
+        position: fixed; inset: 0; display: grid; place-items: center;
+        background: #F5F6FB; font-family: 'Inter', sans-serif;
+      }
+      #boot .logo {
+        width: 56px; height: 56px; border-radius: 16px;
+        background: linear-gradient(135deg, #7C5CFC, #5B5FE9);
+        display: grid; place-items: center; margin-bottom: 18px;
+        box-shadow: 0 12px 28px -8px rgba(91,95,233,0.6);
+        animation: dgBootPop 1.4s ease-in-out infinite;
+      }
+      #boot .logo svg { width: 30px; height: 30px; fill: #fff; }
+      #boot .spinner {
+        width: 30px; height: 30px; border: 3px solid #E6E7F5;
+        border-top-color: #5B5FE9; border-radius: 50%;
+        animation: dgBootSpin 0.8s linear infinite;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot">
+        <div style="text-align:center">
+          <div class="logo">
+            <svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V5l-8-3Z"/></svg>
+          </div>
+          <div class="spinner" style="margin:0 auto"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,3 +1,4 @@
+import { lazy } from 'react';
 import { Admin, Resource } from 'react-admin';
 import { BrowserRouter } from 'react-router-dom';
 import { dataProvider } from './dataProvider';
@@ -5,7 +6,12 @@ import { authProvider } from './authProvider';
 import { lightTheme, darkTheme } from './theme';
 import { LoginPage } from './LoginPage';
 import { MyLayout } from './Layout';
-import { Dashboard } from './dashboard/Dashboard';
+
+// Lazy-loaded so the heavy charts (recharts) load only when the dashboard
+// opens — keeps the login/initial bundle small and fast.
+const Dashboard = lazy(() =>
+  import('./dashboard/Dashboard').then((m) => ({ default: m.Dashboard })),
+);
 
 import { FeedbackList, FeedbackShow, feedbackIcon } from './resources/feedback';
 import { UsersList, UsersShow, usersIcon } from './resources/users';

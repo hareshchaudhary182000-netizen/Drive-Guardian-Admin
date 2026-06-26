@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
+    "ra-data-fakerest": "^5.15.0",
     "ra-supabase": "^3.5.2",
     "react": "^19.2.7",
     "react-admin": "^5.15.1",

@@ -16,7 +16,7 @@ import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 export const usersIcon = PersonRoundedIcon;
 
 const filters = [
-  <SearchInput source="name@ilike" alwaysOn placeholder="Search name" key="q" />,
+  <SearchInput source="name" alwaysOn placeholder="Search name" key="q" />,
 ];
 
 const NameCell = (r: any) => (
