@@ -5,6 +5,7 @@ import { authProvider } from './authProvider';
 import { lightTheme, darkTheme } from './theme';
 import { LoginPage } from './LoginPage';
 import { MyLayout } from './Layout';
+import { LoadingScreen } from './LoadingScreen';
 import { Dashboard } from './dashboard/Dashboard';
 
 import { FeedbackList, FeedbackShow, feedbackIcon } from './resources/feedback';
@@ -28,6 +29,7 @@ const App = () => (
       authProvider={authProvider}
       loginPage={LoginPage}
       layout={MyLayout}
+      loading={LoadingScreen}
       dashboard={Dashboard}
       theme={lightTheme}
       darkTheme={darkTheme}
