@@ -10,6 +10,7 @@ import {
 } from 'react-admin';
 import { Chip } from '@mui/material';
 import TimelineRoundedIcon from '@mui/icons-material/TimelineRounded';
+import { downloadSheet, fmtDateTime, tone } from '../exportUtils';
 
 export const activityIcon = TimelineRoundedIcon;
 
@@ -21,6 +22,37 @@ const EVENT_LABELS: Record<string, string> = {
   call_rejected: 'Call rejected',
   call_missed: 'Call missed',
   call_outgoing: 'Call made',
+};
+
+/** Clean, branded export matching the Activity table (friendly event + driver). */
+const exportActivity = async (records: any[], fetchRelatedRecords: any) => {
+  const users = await fetchRelatedRecords(records, 'user_id', 'profiles');
+  await downloadSheet({
+    filename: 'activity_logs',
+    sheetName: 'Activity',
+    title: 'DriveGuardian · Activity Logs',
+    columns: [
+      { header: 'Event', width: 20 },
+      { header: 'Speed', width: 14, align: 'center' },
+      {
+        header: 'Status',
+        width: 14,
+        align: 'center',
+        tone: (v: string) => (v === 'Risk' ? tone.danger : tone.success),
+      },
+      { header: 'Driver', width: 22 },
+      { header: 'Email', width: 30 },
+      { header: 'When', width: 24 },
+    ],
+    rows: records.map(r => [
+      EVENT_LABELS[r.event_type] ?? r.event_type,
+      `${Math.round(r.speed ?? 0)} km/h`,
+      r.is_risk ? 'Risk' : 'Safe',
+      users[r.user_id]?.name || '—',
+      users[r.user_id]?.email || '',
+      fmtDateTime(r.occurred_at),
+    ]),
+  });
 };
 
 const filters = [
@@ -41,6 +73,7 @@ export const ActivityList = () => (
     sort={{ field: 'occurred_at', order: 'DESC' }}
     perPage={50}
     title="Activity Logs"
+    exporter={exportActivity}
   >
     <Datagrid rowClick={false} bulkActionButtons={false}>
       <FunctionField

@@ -95,6 +95,8 @@ export const MyMenu = () => {
       <Menu.ResourceItem name="activity_logs" />
       <Menu.ResourceItem name="reports" />
       <Menu.ResourceItem name="ads" />
+      {/* Temporarily hidden — re-enable when ready:
+      <Menu.ResourceItem name="notifications" /> */}
     </Menu>
   );
 };

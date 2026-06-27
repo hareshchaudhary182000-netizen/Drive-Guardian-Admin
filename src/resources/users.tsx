@@ -12,11 +12,55 @@ import {
 } from 'react-admin';
 import { Avatar, Chip, Stack, Typography } from '@mui/material';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import { downloadSheet, fmtDate, tone } from '../exportUtils';
 
 export const usersIcon = PersonRoundedIcon;
 
+/** Clean, branded export matching the Drivers table (no raw UUIDs). */
+const exportDrivers = async (records: any[], _frr: any, dataProvider: any) => {
+  const counts: Record<string, number> = {};
+  try {
+    const { data } = await dataProvider.getList('partners', {
+      pagination: { page: 1, perPage: 2000 },
+      sort: { field: 'id', order: 'ASC' },
+      filter: {},
+    });
+    (data || []).forEach((p: any) => {
+      counts[p.owner_id] = (counts[p.owner_id] || 0) + 1;
+    });
+  } catch {
+    /* counts are best-effort */
+  }
+  await downloadSheet({
+    filename: 'drivers',
+    sheetName: 'Drivers',
+    title: 'DriveGuardian · Drivers',
+    columns: [
+      { header: 'Name', width: 24 },
+      { header: 'Email', width: 30 },
+      { header: 'Phone', width: 18 },
+      {
+        header: 'Role',
+        width: 12,
+        align: 'center',
+        tone: (v: string) => (v === 'admin' ? tone.brand : undefined),
+      },
+      { header: 'Partners', width: 11, align: 'center' },
+      { header: 'Member Since', width: 16 },
+    ],
+    rows: records.map(r => [
+      r.name || 'Driver',
+      r.email || '',
+      r.phone || '',
+      r.role || 'Driver',
+      counts[r.id] || 0,
+      fmtDate(r.member_since),
+    ]),
+  });
+};
+
 const filters = [
-  <SearchInput source="name" alwaysOn placeholder="Search name" key="q" />,
+  <SearchInput source="name@ilike" alwaysOn placeholder="Search name" key="q" />,
 ];
 
 const NameCell = (r: any) => (
@@ -29,7 +73,7 @@ const NameCell = (r: any) => (
 );
 
 export const UsersList = () => (
-  <List filters={filters} sort={{ field: 'name', order: 'ASC' }} title="Drivers">
+  <List filters={filters} sort={{ field: 'name', order: 'ASC' }} title="Drivers" exporter={exportDrivers}>
     <Datagrid rowClick="show" bulkActionButtons={false}>
       <FunctionField label="Driver" render={NameCell} />
       <EmailField source="email" label="Email" emptyText="—" />

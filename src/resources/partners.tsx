@@ -10,11 +10,40 @@ import {
 } from 'react-admin';
 import { Chip, Stack } from '@mui/material';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
+import { downloadSheet, fmtDate } from '../exportUtils';
+
+/** Clean, branded export matching the Partners table (resolves driver name). */
+const exportPartners = async (records: any[], fetchRelatedRecords: any) => {
+  const owners = await fetchRelatedRecords(records, 'owner_id', 'profiles');
+  await downloadSheet({
+    filename: 'partners',
+    sheetName: 'Partners',
+    title: 'DriveGuardian · Partners',
+    columns: [
+      { header: 'Partner', width: 22 },
+      { header: 'Email', width: 28 },
+      { header: 'Phone', width: 18 },
+      { header: 'Relation', width: 14 },
+      { header: 'Channels', width: 18 },
+      { header: 'Driver', width: 22 },
+      { header: 'Added', width: 16 },
+    ],
+    rows: records.map(r => [
+      r.name || '',
+      r.email || '',
+      r.phone || '',
+      r.relation || '',
+      Array.isArray(r.channels) ? r.channels.join(' / ') : '',
+      owners[r.owner_id]?.name || '—',
+      fmtDate(r.created_at),
+    ]),
+  });
+};
 
 export const partnersIcon = HandshakeRoundedIcon;
 
 const filters = [
-  <SearchInput source="name" alwaysOn placeholder="Search partner" key="q" />,
+  <SearchInput source="name@ilike" alwaysOn placeholder="Search partner" key="q" />,
 ];
 
 const Channels = (r: any) => {
@@ -29,7 +58,7 @@ const Channels = (r: any) => {
 };
 
 export const PartnersList = () => (
-  <List filters={filters} sort={{ field: 'created_at', order: 'DESC' }} title="Partners">
+  <List filters={filters} sort={{ field: 'created_at', order: 'DESC' }} title="Partners" exporter={exportPartners}>
     <Datagrid rowClick={false} bulkActionButtons={false}>
       <TextField source="name" />
       <EmailField source="email" emptyText="—" />

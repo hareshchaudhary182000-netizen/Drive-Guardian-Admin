@@ -1,4 +1,3 @@
-import { lazy } from 'react';
 import { Admin, Resource } from 'react-admin';
 import { BrowserRouter } from 'react-router-dom';
 import { dataProvider } from './dataProvider';
@@ -6,12 +5,7 @@ import { authProvider } from './authProvider';
 import { lightTheme, darkTheme } from './theme';
 import { LoginPage } from './LoginPage';
 import { MyLayout } from './Layout';
-
-// Lazy-loaded so the heavy charts (recharts) load only when the dashboard
-// opens — keeps the login/initial bundle small and fast.
-const Dashboard = lazy(() =>
-  import('./dashboard/Dashboard').then((m) => ({ default: m.Dashboard })),
-);
+import { Dashboard } from './dashboard/Dashboard';
 
 import { FeedbackList, FeedbackShow, feedbackIcon } from './resources/feedback';
 import { UsersList, UsersShow, usersIcon } from './resources/users';
@@ -19,6 +13,12 @@ import { PartnersList, partnersIcon } from './resources/partners';
 import { ActivityList, activityIcon } from './resources/activityLogs';
 import { ReportsList, reportsIcon } from './resources/reports';
 import { AdsList, AdsCreate, AdsEdit, adsIcon } from './resources/ads';
+import {
+  NotificationsList,
+  NotificationsCreate,
+  NotificationsEdit,
+  notificationsIcon,
+} from './resources/notifications';
 
 const App = () => (
   <BrowserRouter>
@@ -75,6 +75,14 @@ const App = () => (
       icon={adsIcon}
       options={{ label: 'Sponsored Ads' }}
       />
+    <Resource
+      name="notifications"
+      list={NotificationsList}
+      create={NotificationsCreate}
+      edit={NotificationsEdit}
+      icon={notificationsIcon}
+      options={{ label: 'Notifications' }}
+    />
     </Admin>
   </BrowserRouter>
 );
